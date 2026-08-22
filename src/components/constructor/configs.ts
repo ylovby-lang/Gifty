@@ -1,65 +1,145 @@
 // ============================================================================
-// gifty.by · Конструктор · MVP-конфиги (система «зон печати»)
-// Компонент НЕ знает про «кружку»/«постер» — только массив зон.
-// Все координаты/размеры зон — В ПРОЦЕНТАХ от мокапа (0–100).
+// gifty.by · Конструктор · Макеты «развёртки» кружки (система «зон печати»)
+//
+// Физическая зона печати кружки: 200 мм × 95 мм → соотношение 21:10.
+// Все координаты/размеры зон — В ПРОЦЕНТАХ от плоского белого листа (0–100).
+// mockupUrl всегда '' — реальный URL приходит пропом из Supabase и используется
+// только как статичная картинка товара в правой колонке (не фон превью).
 // ============================================================================
 import type { ConstructorConfig } from './types';
 
-/** «Белая кружка» — одна зона-картинка (центральная печатная область). */
-export const MUG_CONFIG: ConstructorConfig = {
-  id: 'mug-white',
+/** Макет 1 — «Всё фото»: одна зона-картинка на всю площадь развёртки. */
+const FULL_PHOTO: ConstructorConfig = {
+  id: 'full-photo',
+  label: 'Всё фото',
   productType: 'mug',
-  mockupUrl: '', // реальный мокап подставим позже; пока превью — белый div
+  mockupUrl: '',
   zones: [
-    {
-      id: 'mug-print',
-      type: 'image',
-      x: 30,
-      y: 30,
-      width: 40,
-      height: 40,
-      aspectRatio: 1,
-    },
+    { id: 'full-photo-img', type: 'image', x: 0, y: 0, width: 100, height: 100 },
   ],
 };
 
-/** «Постер А4» — три зоны: текст-заголовок, картинка, текст-подпись. */
-export const POSTER_CONFIG: ConstructorConfig = {
-  id: 'poster-a4',
-  productType: 'poster',
+/** Макет 2 — «Текст + Фото»: текст слева (30%), фото справа (68%). */
+const TEXT_PHOTO: ConstructorConfig = {
+  id: 'text-photo',
+  label: 'Текст + Фото',
+  productType: 'mug',
   mockupUrl: '',
   zones: [
     {
-      id: 'poster-title',
+      id: 'text-photo-text',
       type: 'text',
-      x: 8,
-      y: 6,
-      width: 84,
-      height: 14,
-      defaultText: 'Поздравляю!',
-      maxLines: 2,
+      x: 0,
+      y: 0,
+      width: 30,
+      height: 100,
+      defaultText: 'Текст',
+      maxLines: 4,
     },
     {
-      id: 'poster-image',
+      id: 'text-photo-img',
       type: 'image',
-      x: 12,
-      y: 24,
-      width: 76,
-      height: 52,
-      aspectRatio: 1.4,
-    },
-    {
-      id: 'poster-caption',
-      type: 'text',
-      x: 8,
-      y: 80,
-      width: 84,
-      height: 14,
-      defaultText: 'С любовью',
-      maxLines: 2,
+      x: 32,
+      y: 0,
+      width: 68,
+      height: 100,
     },
   ],
 };
 
-/** Все доступные конфиги — источник переключателя в компоненте. */
-export const MVP_CONFIGS: ConstructorConfig[] = [MUG_CONFIG, POSTER_CONFIG];
+/** Макет 3 — «Текст + Фото + Текст»: текст/фото/текст (25/46/25). */
+const TEXT_PHOTO_TEXT: ConstructorConfig = {
+  id: 'text-photo-text',
+  label: 'Текст + Фото + Текст',
+  productType: 'mug',
+  mockupUrl: '',
+  zones: [
+    {
+      id: 'tpt-text-1',
+      type: 'text',
+      x: 0,
+      y: 0,
+      width: 25,
+      height: 100,
+      defaultText: 'Текст',
+      maxLines: 3,
+    },
+    {
+      id: 'tpt-img',
+      type: 'image',
+      x: 27,
+      y: 0,
+      width: 46,
+      height: 100,
+    },
+    {
+      id: 'tpt-text-2',
+      type: 'text',
+      x: 75,
+      y: 0,
+      width: 25,
+      height: 100,
+      defaultText: 'Текст',
+      maxLines: 3,
+    },
+  ],
+};
+
+/** Макет 4 — «Заголовок + Текст + Сетка 2×2»: два текста сверху, 4 фото внизу. */
+const TITLE_TEXT_GRID: ConstructorConfig = {
+  id: 'title-text-grid-2x2',
+  label: 'Заголовок + Текст + Сетка 2×2',
+  productType: 'mug',
+  mockupUrl: '',
+  zones: [
+    {
+      id: 'ttg-title',
+      type: 'text',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 20,
+      defaultText: 'Заголовок',
+      maxLines: 2,
+    },
+    {
+      id: 'ttg-subtitle',
+      type: 'text',
+      x: 0,
+      y: 22,
+      width: 100,
+      height: 15,
+      defaultText: 'Подзаголовок',
+      maxLines: 2,
+    },
+    { id: 'ttg-img-1', type: 'image', x: 0, y: 40, width: 50, height: 30 },
+    { id: 'ttg-img-2', type: 'image', x: 50, y: 40, width: 50, height: 30 },
+    { id: 'ttg-img-3', type: 'image', x: 0, y: 70, width: 50, height: 30 },
+    { id: 'ttg-img-4', type: 'image', x: 50, y: 70, width: 50, height: 30 },
+  ],
+};
+
+/** Макет 5 — «Сетка 6 фото (2×3)»: 6 фото, 2 ряда × 3 колонки на всю площадь. */
+const GRID_6: ConstructorConfig = {
+  id: 'grid-6',
+  label: 'Сетка 6 фото (2×3)',
+  productType: 'mug',
+  mockupUrl: '',
+  zones: [
+    { id: 'g6-1', type: 'image', x: 0, y: 0, width: 33.33, height: 50 },
+    { id: 'g6-2', type: 'image', x: 33.33, y: 0, width: 33.33, height: 50 },
+    { id: 'g6-3', type: 'image', x: 66.66, y: 0, width: 33.33, height: 50 },
+    { id: 'g6-4', type: 'image', x: 0, y: 50, width: 33.33, height: 50 },
+    { id: 'g6-5', type: 'image', x: 33.33, y: 50, width: 33.33, height: 50 },
+    { id: 'g6-6', type: 'image', x: 66.66, y: 50, width: 33.33, height: 50 },
+  ],
+};
+
+/** Все доступные макеты «развёртки» — источник выпадающего списка «Выбор макета». */
+export const MVP_CONFIGS: ConstructorConfig[] = [
+  FULL_PHOTO,
+  TEXT_PHOTO,
+  TEXT_PHOTO_TEXT,
+  TITLE_TEXT_GRID,
+  GRID_6,
+];
